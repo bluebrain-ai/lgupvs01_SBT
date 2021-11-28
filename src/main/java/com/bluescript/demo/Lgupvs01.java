@@ -54,6 +54,7 @@ import com.bluescript.demo.model.CaMotor;
 import com.bluescript.demo.model.CaCommercial;
 import com.bluescript.demo.entity.ksdsPolyKey;
 import com.bluescript.demo.model.CaClaim;
+import com.bluescript.demo.entity.KsdsPolyEntity;
 
 @Getter
 @Setter
@@ -125,13 +126,14 @@ public class Lgupvs01 {
     private int eibcalen;
 
     @PostMapping("/lgupvs01")
+    @Transactional
     public ResponseEntity<Dfhcommarea> mainline(@RequestBody Dfhcommarea payload) {
         BeanUtils.copyProperties(payload, dfhcommarea);
         log.warn("mainline started:" + dfhcommarea);
         wfPolicyKey.setWfRequestId(dfhcommarea.getCaRequestId().substring(3, 4));
-        wfPolicyKey.setWfPolicyNum(String.valueOf(caPolicyRequest.getCaPolicyNum()));
+        wfPolicyKey.setWfPolicyNum(String.valueOf(dfhcommarea.getCaPolicyRequest().getCaPolicyNum()));
         wfPolicyKey.setWfCustomerNum(String.valueOf(dfhcommarea.getCaCustomerNum()));
-
+        log.warn(" wfPolicyKey:" + wfPolicyKey.toString());
         switch (wfPolicyKey.getWfRequestId()) {
         case "C":
             wfCPolicyData.setWfBPostcode(dfhcommarea.getCaPolicyRequest().getCaCommercial().getCaBPostcode());
@@ -167,13 +169,15 @@ public class Lgupvs01 {
             break;
         }
 
-        wfPolicyKey.setWfPolicyNum(String.valueOf(caPolicyRequest.getCaPolicyNum()));
+        // wfPolicyKey.setWfPolicyNum(String.valueOf(caPolicyRequest.getCaPolicyNum()));
         try {
 
             ksdsPolyKey policykey = new ksdsPolyKey(dfhcommarea.getCaRequestId().substring(3, 4),
-                    String.valueOf(caPolicyRequest.getCaPolicyNum()), String.valueOf(dfhcommarea.getCaCustomerNum()));
-            // wsFilein =
-            ksdspoly.findById(policykey);
+                    String.valueOf(dfhcommarea.getCaCustomerNum()),
+                    String.valueOf(dfhcommarea.getCaPolicyRequest().getCaPolicyNum()));
+            log.warn("polickey:" + policykey.toString());
+            String wsFilein = ksdspoly.findById(policykey).get().toString();
+            log.warn("Wsfilein:" + wsFilein);
         } catch (Exception e) {
             log.error(e);
             wsResp = 1;
@@ -188,7 +192,7 @@ public class Lgupvs01 {
 
         }
         try {
-            ksdspoly.updateKsdsPolyById(wfCPolicyData.getWfBPostcode(), wfCPolicyData.getWfBStatus(),
+            int k = ksdspoly.updateKsdsPolyById(wfCPolicyData.getWfBPostcode(), wfCPolicyData.getWfBStatus(),
                     wfCPolicyData.getWfBCustomer(), wfEPolicyData.getWfEWithProfits(), wfEPolicyData.getWfEEquities(),
                     wfEPolicyData.getWfEManagedFund(), wfEPolicyData.getWfEFundName(),
                     wfEPolicyData.getWfELifeAssured(), wfHPolicyData.getWfHPropertyType(),
@@ -196,7 +200,7 @@ public class Lgupvs01 {
                     wfHPolicyData.getWfHHouseName(), wfMPolicyData.getWfMMake(), wfMPolicyData.getWfMModel(),
                     wfMPolicyData.getWfMValue(), wfMPolicyData.getWfMRegnumber(), wfPolicyKey.getWfRequestId(),
                     wfPolicyKey.getWfCustomerNum(), wfPolicyKey.getWfPolicyNum());
-
+            log.warn("K update:" + k);
         } catch (Exception e) {
             log.error(e);
             wsResp = 1;

@@ -16,7 +16,7 @@ public interface KsdspolyRepository extends CrudRepository<KsdsPolyEntity, ksdsP
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE KSDSPOLY set BPOSTCODE=:wfBPostcode,BSTATUS=:wfBStatus,BCUSTOMER=:wfBCustomer,EWITH_PROFITS=:wfEWithProfits,EEQUITIES=:wfEEquities,EMANAGED_FUND=:wfEManagedFund,EFUND_NAME=:wfEFundName,ELIFE_ASSURED=:wfELifeAssured,HPROPERTY_TYPE=:wfHPropertyType,HBEDROOMS=:wfHBedrooms,HVALUE=:wfHValue,   HPOSTCODE=:wfHPostcode,HHOUSE_NAME=:wfHHouseName,MMAKE=:WfMMake,MMODEL=:wfMModel,FMVALU=:wfMValue,   FMREGNUMBER=:wfMRegnumber WHERE REQUESTID=:wfRequestId and CUSTOMERNUM=:wfCustomerNum and POLICYNUM=:wfPolicyNum", nativeQuery = true)
 
-    void updateKsdsPolyById(@Param("wfBPostcode") String wfBPostcode, @Param("wfBStatus") int wfBStatus,
+    int updateKsdsPolyById(@Param("wfBPostcode") String wfBPostcode, @Param("wfBStatus") int wfBStatus,
             @Param("wfBCustomer") String wfBCustomer, @Param("wfEWithProfits") String wfEWithProfits,
             @Param("wfEEquities") String wfEEquities, @Param("wfEManagedFund") String wfEManagedFund,
             @Param("wfEFundName") String wfEFundName, @Param("wfELifeAssured") String wfELifeAssured,
